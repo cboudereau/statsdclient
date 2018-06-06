@@ -1,4 +1,5 @@
-﻿module StatsdClient
+﻿[<RequireQualifiedAccess>]
+module StatsdClient
 
 open System.Net.Sockets
 
@@ -12,10 +13,11 @@ let empty = Metric ""
 
 let private (|Empty|_|) (Metric x) = if System.String.IsNullOrWhiteSpace(x) then None else Some ()
 
-let (+) x y = 
-    match x, y with
-    | Empty, x' | x', Empty -> x'
-    | Metric x', Metric y' -> sprintf "%s\n%s" x' y' |> Metric
+module Operators = 
+    let (+) x y = 
+        match x, y with
+        | Empty, x' | x', Empty -> x'
+        | Metric x', Metric y' -> sprintf "%s\n%s" x' y' |> Metric
 
 let udp hostname (port:uint16) = new System.Net.Sockets.UdpClient(hostname, int port)
 
