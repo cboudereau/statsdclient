@@ -7,7 +7,9 @@ type Metric = private Metric of string
 
 let counter name value = sprintf "%s:%i|c" name value |> Metric
 let gauge name value = sprintf "%s:%i|g" name value |> Metric
-let timer name value = sprintf "%s:%i|ms" name value |> Metric
+let timer name (value:System.TimeSpan) = sprintf "%s:%i|ms" name (int value.TotalMilliseconds) |> Metric
+
+let stopwatch = System.Diagnostics.Stopwatch.StartNew
 
 let empty = Metric ""
 
