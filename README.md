@@ -22,8 +22,8 @@ paket-files/
 
 ## Sample
 ```fsharp
-let client = StatsdClient.udp "127.0.0.1" 61914us
-let send = StatsdClient.sender client |> StatsdClient.send
+let client = StatsdClient.Udp.client "127.0.0.1" 61914us
+let send = StatsdClient.Udp.sender client |> StatsdClient.send
 
 send (StatsdClient.counter "hello" 1) |> Async.RunSynchronously
 
