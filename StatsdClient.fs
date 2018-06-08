@@ -37,6 +37,6 @@ module Udp =
         |> Sender
 
 module Zero = 
-    let sender _ = 
+    let sender = 
         fun _ -> async.Return () 
         |> Sender
