@@ -21,16 +21,22 @@ module Operators =
         | Empty, x' | x', Empty -> x'
         | Metric x', Metric y' -> sprintf "%s\n%s" x' y' |> Metric
 
-let udp hostname (port:uint16) = new System.Net.Sockets.UdpClient(hostname, int port)
-
 type [<Struct>] Sender = private Sender of (Metric -> Async<unit>)
 
-let sender (client:UdpClient) = 
-    fun (Metric m) -> 
-        let bytes = System.Text.Encoding.ASCII.GetBytes(m:string)
-        client.SendAsync(bytes, bytes.Length)
-        |> Async.AwaitTask
-        |> Async.Ignore
-    |> Sender
-
 let send (Sender f) m = f m
+
+module Udp = 
+    let client hostname (port:uint16) = new System.Net.Sockets.UdpClient(hostname, int port)
+
+    let sender (client:UdpClient) = 
+        fun (Metric m) -> 
+            let bytes = System.Text.Encoding.ASCII.GetBytes(m:string)
+            client.SendAsync(bytes, bytes.Length)
+            |> Async.AwaitTask
+            |> Async.Ignore
+        |> Sender
+
+module Zero = 
+    let sender _ = 
+        fun _ -> async.Return () 
+        |> Sender
